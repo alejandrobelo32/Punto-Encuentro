@@ -53,6 +53,7 @@ import com.google.maps.android.PolyUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -347,12 +348,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerDestino.remove();
         polylineRuta.remove();
 
-        ArrayList<Usuario> usuarios = new ArrayList<>();
-        usuarios.add(usuario);
-
         institucionSeleccionada.agregarRuta(new Ruta(institucionSeleccionada.getUbicacion(),
                 markerDestino.getPosition(),
-                usuarios,
+                Arrays.asList(usuario),
                 new Date()));
 
         listaIformacionRutas.clear();
