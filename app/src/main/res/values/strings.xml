@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Punto Encuentro</string>
+    <string name="ip">192.168.43.39</string>
+    <string name="title_activity_login_inst">login_inst</string>
+    <string name="title_activity_maps1">Map</string>
+    <string name="spinner_title">Map</string>
+    <string name="unir_ruta">Unir</string>
+    <string name="crear_ruta">Crear</string>
+    <string name="guardar_ruta">Guardar ruta</string>
+</resources>
