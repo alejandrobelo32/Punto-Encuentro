@@ -131,7 +131,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     btnLectorQR = findViewById(R.id.btnLectorQR);
     btnUnir = findViewById(R.id.btn_Unir);
 
-
     usuario = (Usuario) getIntent().getExtras().getSerializable("usuario");
 
     Institucion institucion = new Institucion(1, "Instituto técnologico Beltrán", "12345678", new LatLng(-34.669845,  -58.362907));
@@ -187,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     mMap.moveCamera(CameraUpdateFactory.newLatLng(institucion.getUbicacion()));
     mMap.animateCamera(CameraUpdateFactory.zoomTo(5));*/
 
-    //verificacion usuario
+    //verificacion usuario habilitado
     if (!usuario.isHabilidato()) {
 
       mMap.getUiSettings().setAllGesturesEnabled(false);
