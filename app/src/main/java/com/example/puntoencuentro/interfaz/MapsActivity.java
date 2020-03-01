@@ -64,7 +64,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleMap.OnMarkerDragListener, AdapterView.OnItemClickListener {
 
   private GoogleMap mMap;
-  private Button btnLectorQR, btnCrearRuta, btnGuardarRuta, btnUnir, btnCancelar;
+  private Button btnLectorQR;
+  private Button btnGuardarRuta;
+  private Button btnUnir;
+  private Button btnCancelar;
 
   private List<Institucion> instituciones;
 
@@ -73,7 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   ArrayAdapter ADP;
 
   private BottomSheetBehavior bsbInformacionInstitucion, bsbCrearRuta;
-  private View bsInformacionInstitucion, bsCrearRuta;
+  private View bsInformacionInstitucion;
 
   GoogleApiClient mGoogleApiClient;
   Location mLastLocation;
@@ -103,7 +106,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     bsbInformacionInstitucion.setHideable(true);
     bsbInformacionInstitucion.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-    bsCrearRuta = findViewById(R.id.bottom_sheet_crear_ruta);
+    View bsCrearRuta = findViewById(R.id.bottom_sheet_crear_ruta);
     bsbCrearRuta = BottomSheetBehavior.from(bsCrearRuta);
     bsbCrearRuta.setPeekHeight(200);
     bsbCrearRuta.setHideable(true);
@@ -133,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     usuario = (Usuario) getIntent().getExtras().getSerializable("usuario");
 
-    Institucion institucion = new Institucion(1, "Instituto técnologico Beltrán", "12345678", new LatLng(-34.669845,  -58.362907));
+    Institucion institucion = new Institucion(1, "Instituto técnologico Beltrán", "12345678", new LatLng(-34.669845, -58.362907));
 
     instituciones.add(institucion);
 
@@ -151,7 +154,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
       }
     });
-
 
 
   }
@@ -172,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     mMap = googleMap;
 
-    for (Institucion institucion: instituciones) {
+    for (Institucion institucion : instituciones) {
 
       mMap.addMarker(new MarkerOptions().position(institucion.getUbicacion()).title(institucion.getNombre()))
               .setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -192,7 +194,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       mMap.getUiSettings().setAllGesturesEnabled(false);
       btnLectorQR.setVisibility(View.VISIBLE);
       Toast.makeText(getApplicationContext(), "Debe unirse a una institucion para usar la app", Toast.LENGTH_SHORT).show();
-      mMap.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
+      mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
 
@@ -202,29 +204,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
       });
 
-    //si esta habilitado activa el mapa y los marcadores
+      //si esta habilitado activa el mapa y los marcadores
     } else {
 
       btnLectorQR.setVisibility(View.INVISIBLE);
       mMap.getUiSettings().setAllGesturesEnabled(true);
 
-      mMap.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
+      mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
 
           mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
           mMap.animateCamera(CameraUpdateFactory.zoomTo(5));
 
-          if (markerDestino!=null && polylineRuta!=null){
+          if (markerDestino != null && polylineRuta != null) {
 
             markerDestino.remove();
             polylineRuta.remove();
 
           }
 
-          for (Institucion institucion: instituciones) {
+          for (Institucion institucion : instituciones) {
 
-            if (institucion.getUbicacion().longitude==marker.getPosition().longitude && institucion.getUbicacion().latitude==marker.getPosition().latitude){
+            if (institucion.getUbicacion().longitude == marker.getPosition().longitude && institucion.getUbicacion().latitude == marker.getPosition().latitude) {
 
               institucionSeleccionada = institucion;
 
@@ -242,7 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
           for (Ruta ruta : institucionSeleccionada.getRutas()) {
 
-            listaIformacionRutas.add((ruta.getUsuarios().size()) + " Asistentes, Horario: " +  new SimpleDateFormat("HH:mm").format(ruta.getHoraPartida()));
+            listaIformacionRutas.add((ruta.getUsuarios().size()) + " Asistentes, Horario: " + new SimpleDateFormat("HH:mm").format(ruta.getHoraPartida()));
 
           }
 
@@ -286,7 +288,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       mMap.setMyLocationEnabled(true);
     }
 
-    btnCrearRuta = findViewById(R.id.btn_crear_ruta);
+    Button btnCrearRuta = findViewById(R.id.btn_crear_ruta);
     btnGuardarRuta = findViewById(R.id.btn_guardar_ruta);
     btnCancelar = findViewById(R.id.btn_cancelar_ruta);
 
@@ -301,7 +303,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnGuardarRuta.setEnabled(false);
         btnCancelar.setEnabled(false);
 
-        if (markerDestino!=null && polylineRuta!=null){
+        if (markerDestino != null && polylineRuta != null) {
 
           markerDestino.remove();
           polylineRuta.remove();
@@ -356,7 +358,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for (Ruta ruta : institucionSeleccionada.getRutas()) {
 
-          listaIformacionRutas.add((ruta.getUsuarios().size()) + " Asistentes, Horario: " +  new SimpleDateFormat("HH:mm").format(ruta.getHoraPartida()));
+          listaIformacionRutas.add((ruta.getUsuarios().size()) + " Asistentes, Horario: " + new SimpleDateFormat("HH:mm").format(ruta.getHoraPartida()));
 
         }
 
@@ -368,7 +370,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       @Override
       public void onClick(View v) {
 
-        if (polylineRuta!=null && markerDestino!=null){
+        if (polylineRuta != null && markerDestino != null) {
 
           polylineRuta.remove();
           markerDestino.remove();
@@ -392,7 +394,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for (Ruta ruta : institucionSeleccionada.getRutas()) {
 
-          listaIformacionRutas.add((ruta.getUsuarios().size()) + " Asistentes, Horario: " +  new SimpleDateFormat("HH:mm").format(ruta.getHoraPartida()));
+          listaIformacionRutas.add((ruta.getUsuarios().size()) + " Asistentes, Horario: " + new SimpleDateFormat("HH:mm").format(ruta.getHoraPartida()));
 
         }
 
@@ -474,7 +476,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
   @Override
   public void onMarkerDragStart(Marker marker) {
 
-    if (polylineRuta!=null){
+    if (polylineRuta != null) {
 
       polylineRuta.remove();
       btnGuardarRuta.setEnabled(false);
@@ -486,7 +488,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
   @Override
   public void onMarkerDrag(Marker marker) {
-
 
 
   }
@@ -528,7 +529,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     googleDirectionsUrl.append("origin=" + puntoInicio.latitude + "," + puntoInicio.longitude);
     googleDirectionsUrl.append("&destination=" + puntoFin.latitude + "," + puntoFin.longitude);
     googleDirectionsUrl.append("&mode=walking");
-    googleDirectionsUrl.append("&key="+"AIzaSyAUUwqv11kRDpUkOORcXEW58HqOaTZGEDU");
+    googleDirectionsUrl.append("&key=" + "AIzaSyAUUwqv11kRDpUkOORcXEW58HqOaTZGEDU");
 
     Object dataTransfer[] = new Object[2];
 
