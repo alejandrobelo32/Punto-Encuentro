@@ -2,12 +2,12 @@ package com.example.puntoencuentro.interfaz;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -53,7 +53,7 @@ import com.google.maps.android.PolyUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -73,9 +73,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
   private ListView listViewRutas;
   List<String> listaIformacionRutas;
-  ArrayAdapter ADP;
+  ArrayAdapter<String> ADP;
 
-  private BottomSheetBehavior bsbInformacionInstitucion, bsbCrearRuta;
+  private BottomSheetBehavior<View> bsbInformacionInstitucion;
+  private BottomSheetBehavior<View> bsbCrearRuta;
   private View bsInformacionInstitucion;
 
   GoogleApiClient mGoogleApiClient;
@@ -115,9 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     listViewRutas = findViewById(R.id.listViewRutas);
     listaIformacionRutas = new ArrayList<>();
 
-    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      checkLocationPermission();
-    }
+    checkLocationPermission();
 
     //Check if Google Play Services Available or not
     if (!CheckGooglePlayServices()) {
@@ -211,6 +210,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       mMap.getUiSettings().setAllGesturesEnabled(true);
 
       mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        @SuppressLint("SimpleDateFormat")
         @Override
         public boolean onMarkerClick(Marker marker) {
 
@@ -248,7 +248,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
           }
 
-          ADP = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, listaIformacionRutas);
+          ADP = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, listaIformacionRutas);
 
           listViewRutas.setAdapter(ADP);
 
@@ -276,14 +276,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     });
 
     //Initialize Google Play Services
-    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (ContextCompat.checkSelfPermission(this,
-              Manifest.permission.ACCESS_FINE_LOCATION)
-              == PackageManager.PERMISSION_GRANTED) {
-        buildGoogleApiClient();
-        mMap.setMyLocationEnabled(true);
-      }
-    } else {
+    if (ContextCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
       buildGoogleApiClient();
       mMap.setMyLocationEnabled(true);
     }
@@ -341,6 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     btnGuardarRuta.setOnClickListener(new View.OnClickListener() {
 
+      @SuppressLint("SimpleDateFormat")
       @Override
       public void onClick(View v) {
 
@@ -351,7 +347,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         institucionSeleccionada.agregarRuta(new Ruta(institucionSeleccionada.getUbicacion(),
                 markerDestino.getPosition(),
-                Arrays.asList(usuario),
+                Collections.singletonList(usuario),
                 new Date()));
 
         listaIformacionRutas.clear();
@@ -398,7 +394,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
 
-        ADP = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, listaIformacionRutas);
+        ADP = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, listaIformacionRutas);
 
         listViewRutas.setAdapter(ADP);
 
@@ -531,7 +527,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     googleDirectionsUrl.append("&mode=walking");
     googleDirectionsUrl.append("&key=" + "AIzaSyAUUwqv11kRDpUkOORcXEW58HqOaTZGEDU");
 
-    Object dataTransfer[] = new Object[2];
+    Object[] dataTransfer = new Object[2];
 
     dataTransfer[0] = googleDirectionsUrl.toString();
     dataTransfer[1] = new LatLng(puntoFin.latitude, puntoFin.longitude);
@@ -562,12 +558,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     PolylineOptions options = new PolylineOptions();
 
-    int count = directionsList.length;
-    for (int i = 0; i < count; i++) {
+    for (String s : directionsList) {
 
       options.color(Color.RED);
       options.width(10);
-      options.addAll(PolyUtil.decode(directionsList[i]));
+      options.addAll(PolyUtil.decode(s));
       options.geodesic(true);
 
     }
@@ -659,7 +654,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
           // Permission denied, Disable the functionality that depends on this permission.
           Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
         }
-        return;
       }
 
       // other 'case' lines to check for other permissions this app might request.
